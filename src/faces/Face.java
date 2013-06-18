@@ -1,5 +1,6 @@
 package faces;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +10,16 @@ import processing.core.PVector;
 public class Face {
 
 	String tid;
+
+	public float confidence;
+
+	public boolean smiling;
+	public float smile_rating;
+	public float smile_confidence;
+
+	public String gender;
+	public float gender_confidence;
+
 
 	public PVector center;
 
@@ -24,12 +35,12 @@ public class Face {
 	public PVector ear_left;
 	public PVector ear_right;
 	public PVector top;
-	
+
 	public float w = -1;
 	public float h = -1;
 
-	float photoWidth = 100;
-	float photoHeight = 100;
+	public float photoWidth = 100;
+	public float photoHeight = 100;
 
 	String json;
 
@@ -38,6 +49,11 @@ public class Face {
 
 	public Face() {
 
+	}
+
+	public Face(int w, int h) {
+		photoWidth = w;
+		photoHeight = h;
 	}
 
 	public void setTid(String s) {
@@ -52,21 +68,20 @@ public class Face {
 		h = (float) d;
 	}
 
-	
+
 	private void transform(PVector v, float width, float height) {
 		if (v != null) {
 			v.x = PApplet.map(v.x,0,photoWidth,0,width);
 			v.y = PApplet.map(v.y,0,photoHeight,0,height);
 		}
 	}
-	
+
 	public void scale(float width, float height) {
 		if (width > 0 && height > 0) {
-
 			transform(center,width,height);
 			w = PApplet.map(w,0,photoWidth,0,width);
 			h = PApplet.map(h,0,photoHeight,0,height);
-			
+
 			transform(eye_left,width,height);
 			transform(eye_right,width,height);
 			transform(mouth_left,width,height);
@@ -97,7 +112,6 @@ public class Face {
 	}
 
 	public void setEyeLeft(double x, double y) {
-		System.out.println("HERE");
 		eye_left = new PVector((float)x,(float)y);
 	}
 
@@ -155,6 +169,22 @@ public class Face {
 		return json;
 	}
 
+	public void setConfidence(double d) {
+		confidence = (float) d;
+	}
+
+	public void setSmile(JSONObject smile) throws JSONException {
+		smiling = smile.getBoolean("smiling");
+		smile_rating = (float) smile.getDouble("smile_rating");
+		smile_confidence = (float) smile.getDouble("confidence");
+	}
+
+	public void setGender(JSONObject genderObj) throws JSONException {
+		gender = genderObj.getString("gender");
+		gender_confidence = (float) genderObj.getDouble("confidence");
+	}
+
+
 	public void fromJSON(String content) {
 		try {
 			JSONObject data = new JSONObject(content);
@@ -167,6 +197,16 @@ public class Face {
 	public void fromJSON(JSONObject json) {
 		try {
 			setJSON(json.toString());
+
+
+			setConfidence(json.getDouble("confidence"));
+
+			JSONArray attributes = json.getJSONArray("attributes");
+			setSmile(attributes.getJSONObject(0));
+
+			setGender(attributes.getJSONObject(1));
+
+
 			setTid(json.getString("tid"));
 			setCenter(jsonPVector(json,"center"));
 			setEyeLeft(jsonPVector(json,"eye_left"));
@@ -221,6 +261,14 @@ public class Face {
 	}
 	public void setTop(PVector v) {
 		top = v;
+	}
+
+	public float left() {
+		return  center.x - w/2;	
+	}
+	
+	public float bottom() {
+		return center.y + h/2;
 	}
 
 

@@ -3,21 +3,21 @@ package faces.examples;
 import java.io.File;
 
 import faces.Face;
-import faces.FaceDotCom;
+import faces.LambdaFace;
 import processing.core.PApplet;
 import processing.core.PImage;
 
 public class FaceExample extends PApplet {
 
 	
-	String path = "data/test.jpg";
+	String path = "data/obama.jpg";
 	PImage img;
 	Face[] faces;
 	
 	public void setup() {
 		size(800,600);
-		smooth();
-		FaceDotCom face = new FaceDotCom(this,"","");
+		String key = loadStrings("key.txt")[0];
+		LambdaFace face = new LambdaFace(this,key);
 		img = loadImage(path);
 		faces = face.detectFacesPath(path);
 	}
@@ -42,6 +42,19 @@ public class FaceExample extends PApplet {
 			rect(faces[i].mouth_center.x,faces[i].mouth_center.y,4,4);
 			rect(faces[i].mouth_right.x,faces[i].mouth_right.y,4,4);
 			rect(faces[i].nose.x,faces[i].nose.y,4,4);
+			
+			fill(255);
+			
+			String display = "Gender: " + faces[i].gender + "\n";
+			display += "Gender confidence: " + nf(faces[i].gender_confidence,1,2) + "\n\n";
+
+			display += "Smiling: " + faces[i].smiling + "\n";
+			display += "Smile rating: " + nf(faces[i].smile_rating,1,2) + "\n";
+			display += "Smile confidence: " + nf(faces[i].smile_confidence,1,2);
+
+			
+			text(display,faces[i].left(),faces[i].bottom()+10);
+			
 		}
 	}
 	
