@@ -7,7 +7,7 @@ import faces.LambdaFace;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class FaceExample extends PApplet {
+public class FaceLambdaExample extends PApplet {
 
 	
 	String path = "data/obama.jpg";
@@ -59,7 +59,7 @@ public class FaceExample extends PApplet {
 	}
 	
 	public static void main(String[] args) {
-		PApplet.main(new String[] {FaceExample.class.getName()});
+		PApplet.main(new String[] {FaceLambdaExample.class.getName()});
 	}
 	
 }

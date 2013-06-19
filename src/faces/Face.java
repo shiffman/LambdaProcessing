@@ -20,9 +20,7 @@ public class Face {
 	public String gender;
 	public float gender_confidence;
 
-
 	public PVector center;
-
 	public PVector eye_left;
 	public PVector eye_right;
 	public PVector mouth_left;
